@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>日期</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<link rel="stylesheet" href="css/public.css">
+	<style type="text/css">
+		::-webkit-scrollbar {
+			width: 0;
+		}
+
+		* {
+			padding: 0;
+			margin: 0;
+		}
+
+		.box {
+			
+			position: fixed;
+			z-index: 999;
+			left: 0px;
+			bottom: -300px;
+			width: 100%;
+			min-height: 40%;
+			background: #ffffff;
+			font-size: 0.15rem;
+		}
+		.box_cen{
+			height: 250px;
+			width: 100%;
+			/* background: indianred; */
+			display: flex;
+			overflow: hidden;
+			position: relative;
+		}
+		ul,
+		li {
+			list-style: none;
+		}
+
+		#year {
+			width: 50%;
+			height: 100%;
+			overflow: scroll;
+		}
+
+		#year li {
+			width: 100%;
+			text-align: center;
+			height: 50px;
+			line-height: 50px;
+		}
+
+		#mon {
+			width: 50%;
+			height: 100%;
+			overflow: scroll;
+			transition: all .5s;
+		}
+    li {
+      font-size: 14px;
+    }
+	#mon li {
+		width: 100%;
+		text-align: center;
+		height: 50px;
+		line-height: 50px;
+	}
+
+	.wrap {
+		position: absolute;
+		top: 100px;
+		width: 100%;
+		height: 50px;
+		background: rgba(0, 0, 0, .1);
+	}
+	.date_time{
+		padding: 10px 0;
+		border-bottom: 1px solid #e8e8e8;
+		font-size:14px;
+	}
+	.date_time span{
+		float: left;
+		color: #333;
+		
+	}
+	.date_time input {
+		float: left;
+		margin-left: 17px;
+		position: relative;
+		width: 70%;
+		height: 21px;
+		color: #cbcbcb;
+		outline: none;
+		color: #cbcbcb;
+		border: none;
+	}
+	.shadow{
+		display: none;
+		position: fixed;
+		left: 0px;
+		top: 0px;
+		background-color: #000;
+		width: 100%;
+		height: 100%;
+		filter: alpha(opacity=60);
+		opacity: 0.6;
+		z-Index: 999;
+	}
+	.d_btn {
+		background: #f3f3f3;
+		padding: 15px 10px;
+	}
+	</style>
+</head>
+
+<body>
+  <!--<div id="haha"></div>-->
+	<div class="date_time clear">
+		<span>请选择日期</span>
+		<input id="d_date" onclick="date_time()" type="text" value="" placeholder="月/年"/>
+	</div>
+	<div class="shadow"></div>
+	<div class="box">
+		<div class="d_btn clear">
+			<span class="d_cancel l">取消</span>
+			<span class="d_ensure r">确定</span>
+		</div>
+		<div class="box_cen">
+			<div class="wrap"></div>
+			<ul id="mon">
+				<li>10</li>
+				<li>11</li>
+				<li>12</li>
+				<li>1</li>
+				<li>2</li>
+				<li>3</li>
+				<li>4</li>
+				<li>5</li>
+				<li>6</li>
+				<li>7</li>
+				<li>8</li>
+				<li>9</li>
+				<li>10</li>
+				<li>11</li>
+				<li>12</li>
+				<li>1</li>
+				<li>2</li>
+				<li>3</li>
+				<li>4</li>
+			</ul>
+			<ul id="year">
+				<li></li>
+				<li></li>
+				<li>2016</li>
+				<li>2017</li>
+				<li>2018</li>
+				<li>2019</li>
+				<li>2020</li>
+				<li>2021</li>
+				<li>2022</li>
+				<li>2023</li>
+				<li>2024</li>
+				<li>2025</li>
+				<li>2026</li>
+				<li>2027</li>
+				<li>2028</li>
+				<li>2029</li>
+				<li>2030</li>
+				<li>2031</li>
+				<li>2032</li>
+				<li>2033</li>
+				<li>2034</li>
+				<li>2035</li>
+				<li>2036</li>
+				<li>2037</li>
+				<li>2038</li>
+				<li>2039</li>
+				<li>2040</li>
+				<li>2041</li>
+				<li>2042</li>
+				<li>2043</li>
+				<li>2044</li>
+				<li>2045</li>
+				<li>2046</li>
+				<li>2047</li>
+				<li>2048</li>
+				<li>2049</li>
+				<li>2050</li>
+				<li></li>
+				<li></li>
+			</ul>
+		</div>
+	</div>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script type="text/javascript">
+		var year = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+		var curmon = 2016;
+		var curyear = 1;
+		var year_dom = document.getElementById('year');
+		var mon_dom = document.getElementById('mon');
+		var year_lidom = year_dom.getElementsByTagName('li');
+		var mon_lidom = mon_dom.getElementsByTagName('li');
+		var yearlen = year_lidom.length;
+		var monlen = mon_lidom.length;
+		var yearscr = 0;
+		var monscr = 0;
+		mon_dom.scrollTop = 50;
+		year_lidom[2].style.color = 'red';
+		mon_lidom[2].style.color = 'red';
+		//			mon_dom.ontouchmove=function() {
+		//				monscr = mon_dom.scrollTop;
+		//				var tiemer;
+		//				clearTimeout(tiemer)
+		//				timer = setTimeout(scrollinga,500);
+		//			}
+		mon_dom.addEventListener('scroll', function () {
+			monscr = mon_dom.scrollTop;
+			var tiemer;
+			clearTimeout(tiemer)
+			timer = setTimeout(scrollinga, 500);
+		})
+		year_dom.addEventListener('scroll', function () {
+			yearscr = year_dom.scrollTop;
+			var tiemer;
+			clearTimeout(tiemer);
+			timer = setTimeout(scrollingb, 500);
+			console.log()
+		})
+		function scrollinga() {
+			if (monscr <= 0) {
+				mon_dom.scrollTop = 600
+			} else if (monscr < 25) {
+				mon_dom.scrollTop = 0;
+			} else if (monscr >= 25 && monscr < 75) {
+				mon_dom.scrollTop = 50;
+			} else if (monscr >= 75 && monscr < 125) {
+				mon_dom.scrollTop = 100;
+			} else if (monscr >= 125 && monscr < 175) {
+				mon_dom.scrollTop = 150;
+			} else if (monscr >= 175 && monscr < 225) {
+				mon_dom.scrollTop = 200;
+			} else if (monscr >= 225 && monscr < 275) {
+				mon_dom.scrollTop = 250;
+			} else if (monscr >= 275 && monscr < 325) {
+				mon_dom.scrollTop = 300;
+			} else if (monscr >= 325 && monscr < 375) {
+				mon_dom.scrollTop = 350;
+			} else if (monscr >= 375 && monscr < 425) {
+				mon_dom.scrollTop = 400;
+			} else if (monscr >= 425 && monscr < 475) {
+				mon_dom.scrollTop = 450;
+			} else if (monscr >= 475 && monscr < 525) {
+				mon_dom.scrollTop = 500;
+			} else if (monscr >= 525 && monscr < 575) {
+				mon_dom.scrollTop = 550;
+			} else if (monscr >= 575 && monscr < 625) {
+				mon_dom.scrollTop = 600;
+			} else if (monscr >= 625 && monscr < 675) {
+				mon_dom.scrollTop = 650;
+			} else if (monscr >= 675) {
+				mon_dom.scrollTop = 100;
+			}
+			switch (mon_dom.scrollTop) {
+				case 0: curmon = 12;
+					break;
+				case 50: curmon = 1;
+					break;
+				case 100: curmon = 2;
+					break;
+				case 150: curmon = 3;
+					break;
+				case 200: curmon = 4;
+					break;
+				case 250: curmon = 5;
+					break;
+				case 300: curmon = 6;
+					break;
+				case 350: curmon = 7;
+					break;
+				case 400: curmon = 8;
+					break;
+				case 450: curmon = 9;
+					break;
+				case 500: curmon = 10;
+					break;
+				case 550: curmon = 11;
+					break;
+				case 600: curmon = 12;
+					break;
+				case 650: curmon = 1;
+					break;
+			}
+			for (var i = 0; i < monlen; i++) {
+				if (mon_lidom[i].innerHTML == curmon) {
+					mon_lidom[i].style.color = 'red';
+          			mon_lidom[i].style.fontSize = 16 + 'px';
+				} else {
+         			mon_lidom[i].style.color = 'black';
+					mon_lidom[i].style.fontSize = 14 + 'px';
+				}
+			}
+		}
+		function scrollingb() {
+			if (yearscr < 25) {
+				year_dom.scrollTop = 0;
+			} else if (yearscr >= 25 && yearscr < 75) {
+				year_dom.scrollTop = 50;
+			} else if (yearscr >= 75 && yearscr < 125) {
+				year_dom.scrollTop = 100;
+			} else if (yearscr >= 125 && yearscr < 175) {
+				year_dom.scrollTop = 150;
+			} else if (yearscr >= 175 && yearscr < 225) {
+				year_dom.scrollTop = 200;
+			} else if (yearscr >= 225 && yearscr < 275) {
+				year_dom.scrollTop = 250;
+			} else if (yearscr >= 275 && yearscr < 325) {
+				year_dom.scrollTop = 300;
+			} else if (yearscr >= 325 && yearscr < 375) {
+				year_dom.scrollTop = 350;
+			} else if (yearscr >= 375 && yearscr < 425) {
+				year_dom.scrollTop = 400;
+			} else if (yearscr >= 425 && yearscr < 475) {
+				year_dom.scrollTop = 450;
+			} else if (yearscr >= 475 && yearscr < 525) {
+				year_dom.scrollTop = 500;
+			} else if (yearscr >= 525 && yearscr < 575) {
+				year_dom.scrollTop = 550;
+			} else if (yearscr >= 575 && yearscr < 625) {
+				year_dom.scrollTop = 600;
+			} else if (yearscr >= 625 && yearscr < 675) {
+				year_dom.scrollTop = 650;
+			} else if (yearscr >= 675 && yearscr < 725) {
+				year_dom.scrollTop = 700;
+			} else if (yearscr >= 725 && yearscr < 775) {
+				year_dom.scrollTop = 750;
+			} else if (yearscr >= 775 && yearscr < 825) {
+				year_dom.scrollTop = 800;
+			} else if (yearscr >= 825 && yearscr < 875) {
+				year_dom.scrollTop = 850;
+			} else if (yearscr >= 875 && yearscr < 925) {
+				year_dom.scrollTop = 900;
+			} else if (yearscr >= 925 && yearscr < 975) {
+				year_dom.scrollTop = 950;
+			} else if (yearscr >= 975 && yearscr < 1025) {
+				year_dom.scrollTop = 1000;
+			} else if (yearscr >= 1025 && yearscr < 1075) {
+				year_dom.scrollTop = 1050;
+			} else if (yearscr >= 1075 && yearscr < 1125) {
+				year_dom.scrollTop = 1100;
+			} else if (yearscr >= 1125 && yearscr < 1175) {
+				year_dom.scrollTop = 1150;
+			} else if (yearscr >= 1175 && yearscr < 1225) {
+				year_dom.scrollTop = 1200;
+			} else if (yearscr >= 1225 && yearscr < 1275) {
+				year_dom.scrollTop = 1250;
+			} else if (yearscr >= 1275 && yearscr < 1325) {
+				year_dom.scrollTop = 1300;
+			} else if (yearscr >= 1325 && yearscr < 1375) {
+				year_dom.scrollTop = 1350;
+			} else if (yearscr >= 1375 && yearscr < 1425) {
+				year_dom.scrollTop = 1400;
+			} else if (yearscr >= 1425 && yearscr < 1475) {
+				year_dom.scrollTop = 1450;
+			} else if (yearscr >= 1475 && yearscr < 1525) {
+				year_dom.scrollTop = 1500;
+			} else if (yearscr >= 1525 && yearscr < 1575) {
+				year_dom.scrollTop = 1550;
+			} else if (yearscr >= 1575 && yearscr < 1625) {
+				year_dom.scrollTop = 1600;
+			} else if (yearscr >= 1625 && yearscr < 1675) {
+				year_dom.scrollTop = 1650;
+			} else if (yearscr >= 1675 && yearscr < 1725) {
+				year_dom.scrollTop = 1700;
+			}
+			switch (year_dom.scrollTop) {
+				case 0: curyear = 2016;
+					break;
+				case 50: curyear = 2017;
+					break;
+				case 100: curyear = 2018;
+					break;
+				case 150: curyear = 2019;
+					break;
+				case 200: curyear = 2020;
+					break;
+				case 250: curyear = 2021;
+					break;
+				case 300: curyear = 2022;
+					break;
+				case 350: curyear = 2023;
+					break;
+				case 400: curyear = 2024;
+					break;
+				case 450: curyear = 2025;
+					break;
+				case 500: curyear = 2026;
+					break;
+				case 550: curyear = 2027;
+					break;
+				case 600: curyear = 2028;
+					break;
+				case 650: curyear = 2029;
+					break;
+				case 700: curyear = 2030;
+					break;
+				case 750: curyear = 2031;
+					break;
+				case 800: curyear = 2032;
+					break;
+				case 850: curyear = 2033;
+					break;
+				case 900: curyear = 2034;
+					break;
+				case 950: curyear = 2035;
+					break;
+				case 1000: curyear = 2036;
+					break;
+				case 1050: curyear = 2037;
+					break;
+				case 1100: curyear = 2038;
+					break;
+				case 1150: curyear = 2039;
+					break;
+				case 1200: curyear = 2040;
+					break;
+				case 1250: curyear = 2041;
+					break;
+				case 1300: curyear = 2042;
+					break;
+				case 1350: curyear = 2043;
+					break;
+				case 1400: curyear = 2044;
+					break;
+				case 1450: curyear = 2045;
+					break;
+				case 1500: curyear = 2046;
+					break;
+				case 1550: curyear = 2047;
+					break;
+				case 1600: curyear = 2048;
+					break;
+				case 1650: curyear = 2049;
+					break;
+				case 1700: curyear = 2050;
+					break;
+			}
+			for (var i = 0; i < yearlen; i++) {
+				if (year_lidom[i].innerHTML == curyear) {
+					year_lidom[i].style.color = 'red';
+          			year_lidom[i].style.fontSize = 16 + 'px';
+				} else {
+					year_lidom[i].style.color = 'black';
+          			year_lidom[i].style.fontSize = 14 + 'px'
+				}
+			}
+		}
+		//获取日期
+		var $d_cancel=$(".d_cancel");
+		var $d_ensure=$(".d_ensure");
+		function date_time(){
+			$(".shadow").show();
+			$(".box").animate({"bottom": 0}, 500);
+			
+		}
+		$d_cancel.click(function(){
+			show();
+			$(".date_time").val("")
+		})
+		$d_ensure.click(function(){
+			show();
+			var month;
+			if(curmon<10){
+				month="0"+curmon
+			}else{
+				month=curmon
+			}
+			console.log(month,curyear%1000);
+			var year=curyear%1000;
+			$(".date_time input").val(month+"/"+year)
+			$(".time_list").css({"color":"#333"})
+		})
+		function show(){
+			var dataHeight = $(".shadow").css('height');
+			$(".shadow").hide();
+		    $(".box").animate({"bottom": "-"+dataHeight}, 500);
+		}
+    
+    // var haha = document.getElementById('haha');
+    // var timer = new Timer(haha);
+    // timer.init(haha);
+    // timer.initEvent()
+		// function Timer(dom) {
+
+		// }
+		// Timer.prototype = {
+		// 	init: function (dom) {
+		// 		this.curmon = 2016;
+		// 		this.curyear = 1;
+		// 		this.box = '<div id="box" style="height: 250px;width: 100 %;background: indianred;display: flex;overflow: hidden;position: relative; "></div>';
+		// 		this.warp = '<div class="wrap" style="position: absolute;top: 100px;width: 100%;height: 50px;background: rgba(0, 0, 0, .1);"></div>'
+		// 		this.mon_dom = '<ul id="mon" style="list-style: none;font-size: 14px;"><li>10</li><li>11</li><li>12</li>';//设置月份
+		// 		for(var i = 0; i < 12; i++) {
+    //       this.mon_dom += '<li>' + i + '</li>';
+    //     }
+    //     this.mon_dom += '<li>1</li><li>2</li><li>3</li><li>4</li></ul>';
+    //     this.year_dom = '<ul id="year" style="list-style: none;font-size: 14px;"><li></li><li></li>';//设置年份
+    //     this.num = 2016; //从那一年开始
+    //     for(var j = 0; j < 35; j++) {
+    //       this.year_dom += '<li>' + (this.num+i) + '</li>'; //多少年
+    //     }
+    //     this.year_dom += '<li></li><li></li></ul>';
+    //     dom.appendChild(this.box);
+    //     this.box = document.getElementById('box');
+    //     this.box.appendChild(this.warp);
+    //     this.box.appendChild(this.mon_dom);
+    //     this.box.appendChild(this.year_dom);
+		// 	},
+		// 	initEvent: function () {
+    //     var self = this;
+    //     this.mon_dom = document.getElementById('mon');
+    //     this.year_dom = document.getElementById('year');
+		// 		this.year_lidom = year_dom.getElementsByTagName('li');
+		// 		this.mon_lidom = this.mon_dom.getElementsByTagName('li');
+		// 		this.yearlen = this.year_lidom.length;
+		// 		this.monlen = this.mon_lidom.length;
+		// 		this.yearscr = 0;
+		// 		this.monscr = 0;
+		// 		this.mon_dom.scrollTop = 50;
+		// 		this.year_lidom[2].style.color = 'red';
+		// 		this.mon_lidom[2].style.color = 'red';
+    //     this.year_lidom = this.year_dom.getElementsByTagName('li');
+		// 		this.mon_lidom = this.mon_dom.getElementsByTagName('li');
+    //     this.mon_dom.addEventListener('scroll', function () {
+    //       self.monscr = this.mon_dom.scrollTop;
+    //       var tiemer;
+    //       clearTimeout(tiemer)
+    //       timer = setTimeout(self.scrollinga, 300);
+    //     })
+    //     this.year_dom.addEventListener('scroll', function () {
+    //       this.yearscr = this.year_dom.scrollTop;
+    //       var tiemer;
+    //       clearTimeout(tiemer);
+    //       timer = setTimeout(self.scrollingb, 300);
+    //     })
+		// 	},
+    //   scrollinga: function() {
+    //     if (this.monscr <= 0) {
+    //       this.mon_dom.scrollTop = 600
+    //     } else if (this.monscr < 25) {
+    //       this.mon_dom.scrollTop = 0;
+    //     } else if (this.monscr >= 25 && this.monscr < 75) {
+    //       this.mon_dom.scrollTop = 50;
+    //     } else if (this.monscr >= 75 && this.monscr < 125) {
+    //       this.mon_dom.scrollTop = 100;
+    //     } else if (this.monscr >= 125 && this.monscr < 175) {
+    //       this.mon_dom.scrollTop = 150;
+    //     } else if (this.monscr >= 175 && this.monscr < 225) {
+    //       this.mon_dom.scrollTop = 200;
+    //     } else if (this.monscr >= 225 && this.monscr < 275) {
+    //       this.mon_dom.scrollTop = 250;
+    //     } else if (this.monscr >= 275 && this.monscr < 325) {
+    //       this.mon_dom.scrollTop = 300;
+    //     } else if (this.monscr >= 325 && this.monscr < 375) {
+    //       this.mon_dom.scrollTop = 350;
+    //     } else if (this.monscr >= 375 && this.monscr < 425) {
+    //       this.mon_dom.scrollTop = 400;
+    //     } else if (this.monscr >= 425 && this.monscr < 475) {
+    //       this.mon_dom.scrollTop = 450;
+    //     } else if (this.monscr >= 475 && this.monscr < 525) {
+    //       this.mon_dom.scrollTop = 500;
+    //     } else if (this.monscr >= 525 && this.monscr < 575) {
+    //       this.mon_dom.scrollTop = 550;
+    //     } else if (this.monscr >= 575 && this.monscr < 625) {
+    //       this.mon_dom.scrollTop = 600;
+    //     } else if (this.monscr >= 625 && this.monscr < 675) {
+    //       this.mon_dom.scrollTop = 650;
+    //     } else if (this.monscr >= 675) {
+    //       this.mon_dom.scrollTop = 100;
+    //     }
+    //     switch (this.mon_dom.scrollTop) {
+    //       case 0: this.curmon = 12;
+    //         break;
+    //       case 50: this.curmon = 1;
+    //         break;
+    //       case 100: this.curmon = 2;
+    //         break;
+    //       case 150: this.curmon = 3;
+    //         break;
+    //       case 200: this.curmon = 4;
+    //         break;
+    //       case 250: this.curmon = 5;
+    //         break;
+    //       case 300: this.curmon = 6;
+    //         break;
+    //       case 350: this.curmon = 7;
+    //         break;
+    //       case 400: this.curmon = 8;
+    //         break;
+    //       case 450: this.curmon = 9;
+    //         break;
+    //       case 500: this.curmon = 10;
+    //         break;
+    //       case 550: this.curmon = 11;
+    //         break;
+    //       case 600: this.curmon = 12;
+    //         break;
+    //       case 650: this.curmon = 1;
+    //         break;
+    //     }
+    //     for (var i = 0; i < this.monlen; i++) {
+    //       if (this.mon_lidom[i].innerHTML == this.curmon) {
+    //         this.mon_lidom[i].style.color = 'red';
+    //         this.mon_lidom[i].style.fontSize = 16 + 'px';
+    //       } else {
+    //         this.mon_lidom[i].style.color = 'black';
+    //         this.mon_lidom[i].style.fontSize = 14 + 'px';
+    //       }
+    //     }
+    //   },
+    //   scrollingb: function() {
+    //     if (this.yearscr < 25) {
+    //       this.year_dom.scrollTop = 0;
+    //     } else if (this.yearscr >= 25 && this.yearscr < 75) {
+    //       this.year_dom.scrollTop = 50;
+    //     } else if (this.yearscr >= 75 && this.yearscr < 125) {
+    //       this.year_dom.scrollTop = 100;
+    //     } else if (this.yearscr >= 125 && this.yearscr < 175) {
+    //       this.year_dom.scrollTop = 150;
+    //     } else if (this.yearscr >= 175 && this.yearscr < 225) {
+    //       this.year_dom.scrollTop = 200;
+    //     } else if (this.yearscr >= 225 && this.yearscr < 275) {
+    //       this.year_dom.scrollTop = 250;
+    //     } else if (this.yearscr >= 275 && this.yearscr < 325) {
+    //       this.year_dom.scrollTop = 300;
+    //     } else if (this.yearscr >= 325 && this.yearscr < 375) {
+    //       this.year_dom.scrollTop = 350;
+    //     } else if (this.yearscr >= 375 && this.yearscr < 425) {
+    //       this.year_dom.scrollTop = 400;
+    //     } else if (this.yearscr >= 425 && this.yearscr < 475) {
+    //       this.year_dom.scrollTop = 450;
+    //     } else if (this.yearscr >= 475 && this.yearscr < 525) {
+    //       this.year_dom.scrollTop = 500;
+    //     } else if (this.yearscr >= 525 && this.yearscr < 575) {
+    //       this.year_dom.scrollTop = 550;
+    //     } else if (this.yearscr >= 575 && this.yearscr < 625) {
+    //       this.year_dom.scrollTop = 600;
+    //     } else if (this.yearscr >= 625 && this.yearscr < 675) {
+    //       this.year_dom.scrollTop = 650;
+    //     } else if (this.yearscr >= 675 && this.yearscr < 725) {
+    //       this.year_dom.scrollTop = 700;
+    //     } else if (this.yearscr >= 725 && this.yearscr < 775) {
+    //       this.year_dom.scrollTop = 750;
+    //     } else if (this.yearscr >= 775 && this.yearscr < 825) {
+    //       this.year_dom.scrollTop = 800;
+    //     } else if (this.yearscr >= 825 && this.yearscr < 875) {
+    //       this.year_dom.scrollTop = 850;
+    //     } else if (this.yearscr >= 875 && this.yearscr < 925) {
+    //       this.year_dom.scrollTop = 900;
+    //     } else if (this.yearscr >= 925 && this.yearscr < 975) {
+    //       this.year_dom.scrollTop = 950;
+    //     } else if (this.yearscr >= 975 && this.yearscr < 1025) {
+    //       this.year_dom.scrollTop = 1000;
+    //     } else if (this.yearscr >= 1025 && this.yearscr < 1075) {
+    //       this.year_dom.scrollTop = 1050;
+    //     } else if (this.yearscr >= 1075 && this.yearscr < 1125) {
+    //       this.year_dom.scrollTop = 1100;
+    //     } else if (this.yearscr >= 1125 && this.yearscr < 1175) {
+    //       this.year_dom.scrollTop = 1150;
+    //     } else if (this.yearscr >= 1175 && this.yearscr < 1225) {
+    //       this.year_dom.scrollTop = 1200;
+    //     } else if (this.yearscr >= 1225 && this.yearscr < 1275) {
+    //       this.year_dom.scrollTop = 1250;
+    //     } else if (this.yearscr >= 1275 && this.yearscr < 1325) {
+    //       this.year_dom.scrollTop = 1300;
+    //     } else if (this.yearscr >= 1325 && this.yearscr < 1375) {
+    //       this.year_dom.scrollTop = 1350;
+    //     } else if (this.yearscr >= 1375 && this.yearscr < 1425) {
+    //       this.year_dom.scrollTop = 1400;
+    //     } else if (this.yearscr >= 1425 && this.yearscr < 1475) {
+    //       this.year_dom.scrollTop = 1450;
+    //     } else if (this.yearscr >= 1475 && this.yearscr < 1525) {
+    //       this.year_dom.scrollTop = 1500;
+    //     } else if (this.yearscr >= 1525 && this.yearscr < 1575) {
+    //       this.year_dom.scrollTop = 1550;
+    //     } else if (this.yearscr >= 1575 && this.yearscr < 1625) {
+    //       this.year_dom.scrollTop = 1600;
+    //     } else if (this.yearscr >= 1625 && this.yearscr < 1675) {
+    //       this.year_dom.scrollTop = 1650;
+    //     } else if (this.yearscr >= 1675 && this.yearscr < 1725) {
+    //       this.year_dom.scrollTop = 1700;
+    //     }
+    //     switch (this.year_dom.scrollTop) {
+    //       case 0: this.curyear = 2016;
+    //         break;
+    //       case 50: this.curyear = 2017;
+    //         break;
+    //       case 100: this.curyear = 2018;
+    //         break;
+    //       case 150: this.curyear = 2019;
+    //         break;
+    //       case 200: this.curyear = 2020;
+    //         break;
+    //       case 250: this.curyear = 2021;
+    //         break;
+    //       case 300: this.curyear = 2022;
+    //         break;
+    //       case 350: this.curyear = 2023;
+    //         break;
+    //       case 400: this.curyear = 2024;
+    //         break;
+    //       case 450: this.curyear = 2025;
+    //         break;
+    //       case 500: this.curyear = 2026;
+    //         break;
+    //       case 550: this.curyear = 2027;
+    //         break;
+    //       case 600: this.curyear = 2028;
+    //         break;
+    //       case 650: this.curyear = 2029;
+    //         break;
+    //       case 700: this.curyear = 2030;
+    //         break;
+    //       case 750: this.curyear = 2031;
+    //         break;
+    //       case 800: this.curyear = 2032;
+    //         break;
+    //       case 850: this.curyear = 2033;
+    //         break;
+    //       case 900: this.curyear = 2034;
+    //         break;
+    //       case 950: this.curyear = 2035;
+    //         break;
+    //       case 1000: this.curyear = 2036;
+    //         break;
+    //       case 1050: this.curyear = 2037;
+    //         break;
+    //       case 1100: this.curyear = 2038;
+    //         break;
+    //       case 1150: this.curyear = 2039;
+    //         break;
+    //       case 1200: this.curyear = 2040;
+    //         break;
+    //       case 1250: this.curyear = 2041;
+    //         break;
+    //       case 1300: this.curyear = 2042;
+    //         break;
+    //       case 1350: this.curyear = 2043;
+    //         break;
+    //       case 1400: this.curyear = 2044;
+    //         break;
+    //       case 1450: this.curyear = 2045;
+    //         break;
+    //       case 1500: this.curyear = 2046;
+    //         break;
+    //       case 1550: this.curyear = 2047;
+    //         break;
+    //       case 1600: this.curyear = 2048;
+    //         break;
+    //       case 1650: this.curyear = 2049;
+    //         break;
+    //       case 1700: this.curyear = 2050;
+    //         break;
+    //     }
+    //     for (var i = 0; i < this.yearlen; i++) {
+    //       if (this.year_lidom[i].innerHTML == this.curyear) {
+    //         this.year_lidom[i].style.color = 'red';
+    //         this.year_lidom[i].style.fontSize = 16 + 'px';
+    //       } else {
+    //         this.year_lidom[i].style.color = 'black';
+    //         this.year_lidom[i].style.fontSize = 14 + 'px'
+    //       }
+    //     }
+    //   }
+		// }
+	</script>
+
+</body>
+<html>
